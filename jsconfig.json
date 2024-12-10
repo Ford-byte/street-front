@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",           // Ensure baseUrl is set for relative paths to work
+    "paths": {
+      "@/*": ["src/*"]         // Adjusted to be more explicit
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

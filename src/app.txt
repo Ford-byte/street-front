@@ -1,0 +1,189 @@
+<script setup>
+import { ref, onMounted, onUnmounted } from 'vue';
+import { RouterView, RouterLink } from 'vue-router';
+import router from './router';
+
+// State management
+const role = ref(localStorage.getItem('role'));
+const isSidebarOpen = ref(false);
+
+// Handle localStorage changes
+const onStorageChange = (event) => {
+  const keysToMonitor = ['role', 'isLog', 'isUser', 'Id'];
+  if (keysToMonitor.includes(event.key)) {
+    keysToMonitor.forEach(key => localStorage.removeItem(key));
+    router.push('/login');
+  }
+};
+
+// Log out function
+const logOut = () => {
+  localStorage.removeItem('isLog');
+  // Also clear the role to redirect properly
+  localStorage.removeItem('role');
+  role.value = null; // Update local state as well
+  window.location.reload();
+};
+
+// Lifecycle hooks for event listeners
+onMounted(() => {
+  window.addEventListener('storage', onStorageChange);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('storage', onStorageChange);
+});
+
+// Toggle sidebar visibility
+const toggleSidebar = () => {
+  isSidebarOpen.value = !isSidebarOpen.value;
+};
+</script>
+
+<template>
+  <div class="flex h-full">
+    <!-- Sidebar for admin -->
+    <div
+      class="bg-black h-screen text-white w-64 space-y-6 py-7 px-2 absolute inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out"
+      :class="{ 'translate-x-0': isSidebarOpen, '-translate-x-full': !isSidebarOpen }"
+      v-if="role === 'admin'">
+      <h1 class="text-3xl font-semibold text-center">Admin Panel</h1>
+      <nav class="space-y-2">
+        <RouterLink to="/AdminPage" class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">
+          <!-- SVG for Customer's List -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7m-7 7l7 7m13-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Customer's List
+        </RouterLink>
+
+        <RouterLink to="/seller-list" class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">
+          <!-- SVG for Seller's List -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7m-7 7l7 7m13-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Seller's List
+        </RouterLink>
+
+        <RouterLink to="/product-list" class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">
+          <!-- SVG for Product List -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a2 2 0 00-2 2v12a2 2 0 002 2h18a2 2 0 002-2V6a2 2 0 00-2-2H3zm0 0l9 7 9-7" />
+          </svg>
+          Product List
+        </RouterLink>
+
+        <div @click="logOut" class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">
+          <!-- SVG for Log Out -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 13.88A3 3 0 116.88 12.12m6.627-6.627A3 3 0 118.122 8.12m2.12 7.757a9 9 0 111.415 1.415L12 21a9 9 0 011-1m-5.07-.879L4 15.12m10-10L9 9" />
+          </svg>
+          Log Out
+        </div>
+      </nav>
+    </div>
+
+    <!-- Sidebar for seller -->
+    <div
+      class="bg-black h-screen text-white w-64 space-y-6 py-7 px-2 absolute inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out"
+      :class="{ 'translate-x-0': isSidebarOpen, '-translate-x-full': !isSidebarOpen }"
+      v-if="role === 'seller'">
+      <h1 class="text-3xl font-semibold text-center">Seller Panel</h1>
+      <nav class="space-y-2">
+        <RouterLink to="/AdminPage" class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">
+          <!-- SVG for Dashboard -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7m-7 7l7 7m13-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Dashboard
+        </RouterLink>
+
+        <RouterLink to="/product-category" class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">
+          <!-- SVG for Product Category -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a2 2 0 00-2 2v12a2 2 0 002 2h18a2 2 0 002-2V6a2 2 0 00-2-2H3zm0 0l9 7 9-7" />
+          </svg>
+          Product Category
+        </RouterLink>
+
+        <RouterLink to="/orders" class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">
+          <!-- SVG for Orders -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+          Orders
+        </RouterLink>
+
+        <RouterLink to="/sizes" class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">
+          <!-- SVG for Sizes -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a2 2 0 00-2 2v12a2 2 0 002 2h18a2 2 0 002-2V6a2 2 0 00-2-2H3z" />
+          </svg>
+          Sizes
+        </RouterLink>
+
+        <RouterLink to="/product-sizes" class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">
+          <!-- SVG for Product Sizes -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12l4-4m0 0l4 4m-4-4v12" />
+          </svg>
+          Product Sizes
+        </RouterLink>
+
+        <div @click="logOut" class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">
+          <!-- SVG for Log Out -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 13.88A3 3 0 116.88 12.12m6.627-6.627A3 3 0 118.122 8.12m2.12 7.757a9 9 0 111.415 1.415L12 21a9 9 0 011-1m-5.07-.879L4 15.12m10-10L9 9" />
+          </svg>
+          Log Out
+        </div>
+      </nav>
+    </div>
+
+    <!-- Main content -->
+    <div class="flex-1 bg-gray-100 flex flex-col">
+      <!-- Header -->
+      <header class="bg-black shadow-md p-4 flex items-center justify-between" v-if="role === 'admin'">
+        <div class="text-xl font-semibold text-white">Admin Dashboard</div>
+        <div class="flex items-center space-x-4">
+          <div class="relative group">
+            <button>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-300 hover:text-gray-100" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M3 4a2 2 0 00-2 2v12a2 2 0 002 2h18a2 2 0 002-2V6a2 2 0 00-2-2H3zm0 0l9 7 9-7" />
+              </svg>
+            </button>
+            <span class="absolute top-8 left-1/2 transform -translate-x-1/2 w-max p-2 text-xs text-white bg-gray-800 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">Messages</span>
+          </div>
+
+          <div class="relative group">
+            <button>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-300 hover:text-gray-100" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M10 4v1a6 6 0 0 1 6 6v1h1a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h1V11a6 6 0 0 1 6-6V4m6 14H4m6-3h4" />
+              </svg>
+            </button>
+            <span class="absolute top-8 left-1/2 transform -translate-x-1/2 w-max p-2 text-xs text-white bg-gray-800 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">Notifications</span>
+          </div>
+
+          <div class="relative group">
+            <button>
+              <!-- User Profile Icon SVG (if any) -->
+            </button>
+            <span class="absolute top-8 left-1/2 transform -translate-x-1/2 w-max p-2 text-xs text-white bg-gray-800 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">Profile</span>
+          </div>
+        </div>
+      </header>
+
+      <button @click="toggleSidebar" class="p-2 focus:outline-none md:hidden mt-2 flex justify-end" v-if="role === 'admin'">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      <RouterView />
+    </div>
+  </div>
+</template>

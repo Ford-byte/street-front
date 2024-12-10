@@ -1,0 +1,328 @@
+<template>
+    <HeaderComponent />
+    <section class="bg-gray-900 text-white py-12">
+        <h2 class="text-3xl font-bold text-center mb-10">Latest Products</h2>
+        <div class="relative overflow-hidden max-w-6xl mx-auto">
+            <!-- Carousel -->
+            <div class="carousel-wrapper flex transition-transform duration-700 ease-in-out"
+                :style="{ transform: `translateX(-${currentIndex * 100}%)` }">
+                <div v-for="product in products" :key="product.SW_Id"
+                    class="carousel-item bg-gray-800 p-6 rounded-lg shadow-lg text-center flex-none w-full md:w-1/3 mx-2 cursor-pointer transform hover:scale-105 transition-transform duration-300"
+                    @click="openModal(product)">
+                    <img :alt="product.SW_Name" :src="getImageUrl(product.SW_Images)"
+                        class="mx-auto mb-4 rounded-lg border-2 border-gray-700" />
+                    <h3 class="text-xl font-semibold mb-2">{{ product.SW_Name }}</h3>
+                    <p class="text-gray-400 font-medium">{{ product.SW_Size }}</p>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <button @click="prevSlide" class="carousel-nav-button left-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+            <button @click="nextSlide" class="carousel-nav-button right-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Product Details Modal -->
+        <div v-if="selectedProduct" class="modal-overlay">
+            <div class="modal-content">
+                <!-- Close Button -->
+                <button @click="closeModal" class="modal-close-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+
+                <!-- Modal Content -->
+                <div class="modal-body">
+                    <div class="relative">
+                        <img :src="getImageUrl(selectedProduct.SW_Images)" :alt="selectedProduct.SW_Name"
+                            class="modal-image" />
+                        <div v-if="selectedSize" class="size-indicator">
+                            Size: {{ selectedSize }}
+                        </div>
+                    </div>
+                    <h2 class="text-2xl font-bold mt-2">{{ formattedPrice }}</h2>
+                    <p v-if="canceledMinPrice && canceledMaxPrice" class="line-through text-gray-400">
+                        {{ canceledMinPrice }} - {{ canceledMaxPrice }}
+                    </p>
+                    <div class="mt-4">
+                        <h3 class="font-semibold">Size</h3>
+                        <div class="flex flex-wrap gap-2 mt-2">
+                            <button v-for="size in productSizes" :key="size"
+                                :class="{ 'bg-primary': selectedSize === size, 'bg-secondary': selectedSize !== size }"
+                                class="text-secondary-foreground px-3 py-1 rounded" @click="selectSize(size)">
+                                {{ size }}
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center">
+                        <h3 class="font-semibold">Quantity</h3>
+                        <div class="flex items-center ml-4">
+                            <button class="bg-secondary text-secondary-foreground px-2 py-1 rounded"
+                                @click="decreaseQuantity">-</button>
+                            <span class="mx-2">{{ selectedQuantity }}</span>
+                            <button class="bg-secondary text-secondary-foreground px-2 py-1 rounded"
+                                @click="increaseQuantity">+</button>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex justify-between">
+                        <button class="bg-secondary text-secondary-foreground hover:bg-secondary/80 px-4 py-2 rounded"
+                            @click="addToCart">Add to cart</button>
+                        <button class="bg-primary text-primary-foreground hover:bg-primary/80 px-4 py-2 rounded">Buy
+                            now</button>
+                    </div>
+
+                    <!-- Reviews Section -->
+                    <div v-if="selectedProduct.reviews && selectedProduct.reviews.length" class="mt-6">
+                        <h3 class="font-semibold text-cyan-200">Customer Reviews</h3>
+                        <div v-for="review in selectedProduct.reviews" :key="review.user" class="mt-2">
+                            <p class="font-medium">{{ review.user }}:</p>
+                            <p class="text-gray-400">{{ review.text }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Image Grid Section -->
+    <section class="py-6 bg-gray-900">
+        <div class="container grid grid-cols-2 gap-4 p-4 mx-auto md:grid-cols-4">
+            <div v-for="product in products" :key="product.SW_Id" @click="openModal(product)" class="cursor-pointer">
+                <img :src="getImageUrl(product.SW_Images)" :alt="product.SW_Name"
+                    class="w-full h-full rounded shadow-sm min-h-48 dark:bg-gray-500 aspect-square" />
+            </div>
+        </div>
+    </section>
+
+    <!-- Logout Button -->
+    <div class="bg-gray-900">
+        <button @click="logout" class="bg-red-500 text-white px-4 py-2 rounded">LOG OUT</button>
+    </div>
+</template>
+
+<script setup>
+import { ref, computed, onMounted } from 'vue';
+import axios from '../../../axios';
+import HeaderComponent from './HeaderComponent.vue';
+import { useCartStore } from '../../stores/cart'; // Adjust the path accordingly
+
+const products = ref([]);
+const currentIndex = ref(0);
+const selectedProduct = ref(null);
+const selectedQuantity = ref(1);
+const selectedSize = ref(null);
+const productSizes = ['S', 'M', 'L', 'XL'];
+const error = ref(null);
+
+const formattedPrice = computed(() => {
+    if (selectedProduct.value) {
+        return `₱${(selectedProduct.value.SW_Price * selectedQuantity.value).toFixed(2)}`;
+    }
+    return '₱0.00';
+});
+
+const canceledMinPrice = computed(() => {
+    if (selectedProduct.value) {
+        return `₱${(selectedProduct.value.SW_Price + (200 * 0.355)).toFixed(2)}`;
+    }
+});
+
+const canceledMaxPrice = computed(() => {
+    if (selectedProduct.value) {
+        return `₱${(selectedProduct.value.SW_Price + (600 * 0.355)).toFixed(2)}`;
+    }
+});
+
+const getProducts = async () => {
+    try {
+        const response = await axios.get('/products');
+        products.value = response.data.products;
+    } catch (err) {
+        console.error('Error fetching products:', err);
+        error.value = 'Failed to load products';
+    }
+};
+
+const getImageUrl = (imagePath) => {
+    return `http://localhost:8080/images/${imagePath}`;
+};
+
+onMounted(() => {
+    getProducts();
+});
+
+const nextSlide = () => {
+    currentIndex.value = (currentIndex.value + 1) % products.value.length;
+};
+
+const prevSlide = () => {
+    currentIndex.value = (currentIndex.value - 1 + products.value.length) % products.value.length;
+};
+
+const openModal = (product) => {
+    selectedProduct.value = product;
+    selectedQuantity.value = 1;
+    selectedSize.value = null;
+};
+
+const closeModal = () => {
+    selectedProduct.value = null;
+    selectedSize.value = null;
+};
+
+const increaseQuantity = () => {
+    selectedQuantity.value += 1;
+};
+
+const decreaseQuantity = () => {
+    if (selectedQuantity.value > 1) {
+        selectedQuantity.value -= 1;
+    }
+};
+
+const addToCart = () => {
+    if (selectedProduct.value && selectedSize.value) {
+        try {
+            useCartStore.addToCart(selectedProduct.value, selectedQuantity.value, selectedSize.value);
+            alert('Added to cart!');
+            closeModal(); // Close the modal after adding
+        } catch (error) {
+            alert('Failed to add to cart. Please try again.');
+            console.error(error);
+        }
+    } else {
+        alert('Please select a size before adding to cart.');
+    }
+};
+
+const selectSize = (size) => {
+    selectedSize.value = size;
+};
+
+const logout = () => {
+    localStorage.setItem('isLog', '');
+    window.location.reload();
+}
+</script>
+
+<style scoped>
+.carousel-wrapper {
+    display: flex;
+    flex-direction: row;
+}
+
+.carousel-item {
+    flex: none;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.carousel-nav-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #3b82f6; /* Blue-500 */
+    color: #ffffff;
+    padding: 0.5rem;
+    border-radius: 9999px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.carousel-nav-button:hover {
+    background-color: #2563eb; /* Blue-600 */
+}
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(31, 41, 55, 0.9); /* Gray-900 with opacity */
+    padding: 1rem;
+}
+
+.modal-content {
+    background-color: #1f2937; /* Gray-800 */
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 32rem;
+    max-height: 90vh;
+    overflow: auto;
+    position: relative;
+}
+
+.modal-close-button {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background-color: #ef4444; /* Red-500 */
+    color: #ffffff;
+    padding: 0.5rem;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.modal-close-button:hover {
+    background-color: #dc2626; /* Red-600 */
+}
+
+.modal-body {
+    max-width: 24rem;
+    margin: 0 auto;
+}
+
+.modal-image {
+    width: 100%;
+    height: 12rem;
+    object-fit: cover;
+    border-radius: 0.5rem;
+}
+
+.size-indicator {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.5rem;
+    background-color: #000000;
+    color: #ffffff;
+    font-size: 0.875rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+}
+
+.bg-primary {
+    background-color: #3b82f6; /* Blue-500 */
+}
+
+.bg-secondary {
+    background-color: #4b5563; /* Gray-600 */
+}
+
+.text-primary-foreground {
+    color: #ffffff;
+}
+
+.text-secondary-foreground {
+    color: #e5e7eb; /* Gray-200 */
+}
+
+.text-muted-foreground {
+    color: #9ca3af; /* Gray-400 */
+}
+</style>

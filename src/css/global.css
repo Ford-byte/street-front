@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+    @keyframes animation-in {
+        from {
+            transform: translateY(100%);
+        }
+
+        to {
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes animation-out {
+        from {
+            transform: translateY(0);
+        }
+
+        to {
+            transform: translateY(100%);
+        }
+    }
+
+    .toast-animation-in {
+        animation: animation-in 0.5s forwards;
+    }
+
+    .toast-animation-out {
+        animation: animation-out 0.5s forwards;
+    }
+
+    @keyframes signup-animation-in {
+        from {
+            transform: translateX(100%);
+        }
+
+        to {
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes signup-animation-out {
+        from {
+            transform: translateY(0);
+        }
+
+        to {
+            transform: translateY(100%);
+        }
+    }
+
+    .signup-animation-in {
+        animation: signup-animation-in 0.5s forwards;
+    }
+
+    .signup-animation-out {
+        animation: signup-animation-out 0.5s forwards;
+    }
+}
+
+.monospace {
+    font-family: 'Courier New', Courier, monospace
+}
+
+.sans {
+    font-family: 'Sans-Serif', Arial, sans-serif;
+}
+
+.roboto {
+    font-family: 'Roboto', sans-serif;
+}
+
+.openSans {
+    font-family: 'Open Sans', sans-serif;
+}
+
+.lato {
+    font-family: 'Lato', sans-serif;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
