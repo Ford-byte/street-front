@@ -4,21 +4,14 @@
     <section class="h-screen bg-gray-900">
       <div class="flex justify-center m-4">
         <div
-          class="flex flex-col max-w-3xl p-6 space-y-4 sm:p-10 dark:bg-gray-50 dark:text-gray-800 rounded-md bg-white"
-        >
+          class="flex flex-col max-w-3xl p-6 space-y-4 sm:p-10 dark:bg-gray-50 dark:text-gray-800 rounded-md bg-white">
           <h2 class="text-xl font-semibold">Check Out</h2>
           <ul class="flex flex-col divide-y dark:divide-gray-300">
-            <li
-              v-for="(item, index) in checkedItems"
-              :key="index"
-              class="flex flex-col py-6 sm:flex-row sm:justify-between"
-            >
+            <li v-for="(item, index) in checkedItems" :key="index"
+              class="flex flex-col py-6 sm:flex-row sm:justify-between">
               <div class="flex w-full space-x-2 sm:space-x-4">
-                <img
-                  class="flex-shrink-0 object-cover w-20 h-20 dark:bg-gray-500 sm:w-32 sm:h-32 rounded"
-                  :src="getImageUrl(item.product.SW_Images)"
-                  :alt="item.product.SW_Name"
-                />
+                <img class="flex-shrink-0 object-cover w-20 h-20 dark:bg-gray-500 sm:w-32 sm:h-32 rounded"
+                  :src="getImageUrl(item.product.SW_Images)" :alt="item.product.SW_Name" />
                 <div class="flex flex-col justify-between w-full pb-4">
                   <div class="flex justify-between w-full pb-2 space-x-2">
                     <div class="space-y-1">
@@ -35,7 +28,8 @@
                     <div class="text-right">
                       <p class="text-lg font-semibold">
                         ₱{{
-                          (item.product.SW_Price * item.quantity).toFixed(2)
+                          (item.product.SW_Price * item.quantity - ((item.product.SW_Price *
+                            item.quantity) * (item.product.SW_Discount / 100))).toFixed(2)
                         }}
                       </p>
                     </div>
@@ -45,14 +39,8 @@
             </li>
           </ul>
           <div class="flex w-full justify-end">
-            <label for="payment-method" class="mr-2 font-semibold"
-              >Payment Method:</label
-            >
-            <select
-              name="payment-method"
-              id="payment-method"
-              v-model="paymentMethod"
-            >
+            <label for="payment-method" class="mr-2 font-semibold">Payment Method:</label>
+            <select name="payment-method" id="payment-method" v-model="paymentMethod">
               <option value="cod">Cash on Delivery</option>
               <option value="gcash">Gcash</option>
             </select>
@@ -63,23 +51,13 @@
               <span class="font-semibold">₱{{ calculateTotal() }}</span>
             </p>
           </div>
-          <div
-            class="flex flex-col-reverse sm:flex-row justify-end sm:space-x-4"
-          >
-            <button
-              type="button"
-              @click="router.push('/cart')"
-              aria-label="Go back to cart"
-              class="m-2 md:px-6 md:py-2 border rounded-md border-gray-800"
-            >
+          <div class="flex flex-col-reverse sm:flex-row justify-end sm:space-x-4">
+            <button type="button" @click="router.push('/cart')" aria-label="Go back to cart"
+              class="m-2 md:px-6 md:py-2 border rounded-md border-gray-800">
               Back
             </button>
-            <button
-              type="button"
-              @click="placeOrder"
-              aria-label="Place your order"
-              class="m-2 md:px-6 md:py-2 border rounded-md bg-gray-800 dark:text-gray-50 text-white border-gray-800"
-            >
+            <button type="button" @click="placeOrder" aria-label="Place your order"
+              class="m-2 md:px-6 md:py-2 border rounded-md bg-gray-800 dark:text-gray-50 text-white border-gray-800">
               Place Order
             </button>
           </div>
@@ -108,7 +86,7 @@ const checkedItems = computed(() => {
 const calculateTotal = () => {
   return checkedItems.value
     .reduce((total, item) => {
-      return total + item.product.SW_Price * item.quantity;
+      return total + (item.product.SW_Price * item.quantity - ((item.product.SW_Price * item.quantity) * (item.product.SW_Discount / 100)));
     }, 0)
     .toFixed(2);
 };
@@ -127,11 +105,11 @@ const placeOrder = async () => {
     pid: item.product.SW_Size_id,
     uname: localStorage.getItem("name"),
     pname: item.product.SW_Name,
-    price: item.product.SW_Price,
+    price: item.product.SW_Price - parseInt(parseFloat(item.product.SW_Price) * item.product.SW_Discount / 100),
     size: item.size,
     quantity: item.quantity,
     location: localStorage.getItem("location"),
-    amount: parseFloat(item.product.SW_Price) * parseInt(item.quantity),
+    amount: (parseFloat(item.product.SW_Price) * parseInt(item.quantity) - parseInt((parseFloat(item.product.SW_Price) * parseInt(item.quantity)) * item.product.SW_Discount / 100)),
     psid: item.product.SW_Size_id,
     productId: JSON.parse(localStorage.getItem("cart"))[0].product.SW_Id,
   }));
@@ -142,10 +120,11 @@ const placeOrder = async () => {
     paymentSuccess = await handleGcashPayment(calculateTotal());
     confirmRemoveFromCart(ordersToPlace.value[0]);
   } else if (paymentMethod.value === "cod") {
-    for (const order of ordersToPlace.value) {
-      paymentSuccess = (await handleCashOnDelivery(order)) || paymentSuccess; // Update success status
-      confirmRemoveFromCart(ordersToPlace.value[0]); // Remove item from cart after successful placement
+    for (const [index, order] of ordersToPlace.value.entries()) {
+      paymentSuccess = (await handleCashOnDelivery(order)) || paymentSuccess;
+      confirmRemoveFromCart(ordersToPlace.value[index]);
     }
+
   }
 
   if (paymentSuccess) {
@@ -197,7 +176,6 @@ const showNotification = (message) => {
 };
 
 const confirmRemoveFromCart = (item) => {
-  console.log("ee", item);
   cartStore.removeFromCart(item.productId, item.size); // Pass the appropriate id for removal
 };
 

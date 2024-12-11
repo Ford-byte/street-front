@@ -5,86 +5,53 @@
       <div class="flex justify-between w-full items-center h-fit">
         <!-- Logo Section -->
         <div>
-          <RouterLink
-            to="/"
-            aria-label="Back to homepage"
-            class="flex items-center p-2"
-          >
-            <img
-              :src="`${backLink}/images/logo.png`"
-              alt="Logo"
-              class="h-16 mx-4 object-cover"
-            />
+          <RouterLink to="/" aria-label="Back to homepage" class="flex items-center p-2">
+            <img :src="`${backLink}/images/logo.png`" alt="Logo" class="h-16 mx-4 object-cover" />
             <p class="text-2xl font-semibold lato">STREET WEAR</p>
           </RouterLink>
         </div>
         <div class="flex items-center">
-          <input
-            type="search"
-            v-model="searchInput"
-            @input="getProductsByCategory"
+          <input type="search" v-model="searchInput" @input="getProductsByCategory"
             class="p-2 max-w-full rounded-md text-black bg-white border border-gray-300 shadow focus:outline-none focus:ring focus:ring-gray-500 transition hover:cursor-pointer"
-            placeholder="Search..."
-          />
+            placeholder="Search..." />
         </div>
 
         <!-- Navigation Links -->
         <div class="">
           <ul class="flex items-center gap-4">
             <li>
-              <RouterLink
-                to="dashboard"
-                class="flex items-center"
-                active-class="active"
-              >
+              <RouterLink to="dashboard" class="flex items-center" active-class="active">
                 <HomeIcon />
                 <span class="px-2 font-bold">HOME</span>
               </RouterLink>
             </li>
             <li>
-              <RouterLink
-                to="cart"
-                class="flex items-center"
-                active-class="active"
-              >
+              <RouterLink to="cart" class="flex items-center" active-class="active">
                 <Cart />
                 <span class="px-2 font-bold">CART</span>
               </RouterLink>
             </li>
             <li>
-              <RouterLink
-                to="purchase"
-                class="flex items-center"
-                active-class="active"
-              >
+              <RouterLink to="purchase" class="flex items-center" active-class="active">
                 <BagIcon />
                 <span class="px-2 font-bold">PURCHASE</span>
               </RouterLink>
             </li>
             <li class="relative group">
-              <RouterLink
-                to="buyersettings"
-                class="flex items-center"
-                active-class="active"
-              >
+              <RouterLink to="buyersettings" class="flex items-center" active-class="active">
                 <CogsIcon />
               </RouterLink>
 
               <div
-                class="absolute top-8 right-6 px-3 hidden group-hover:flex items-center bg-gray-800 text-white text-sm rounded shadow-lg z-10"
-              >
+                class="absolute top-8 right-6 px-3 hidden group-hover:flex items-center bg-gray-800 text-white text-sm rounded shadow-lg z-10">
                 Settings
               </div>
             </li>
 
-            <li
-              @click="LogOut"
-              class="relative flex items-center cursor-pointer pr-4 group"
-            >
+            <li @click="LogOut" class="relative flex items-center cursor-pointer pr-4 group">
               <LogOutIcon />
               <div
-                class="absolute top-8 right-8 px-3 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:flex group-hover:opacity-100 transition-opacity duration-200 shadow-lg z-10"
-              >
+                class="absolute top-8 right-8 px-3 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:flex group-hover:opacity-100 transition-opacity duration-200 shadow-lg z-10">
                 Logout
               </div>
             </li>
@@ -98,9 +65,7 @@
         <h2 class="font-bold text-xl md:text-3xl lg:text-xl">
           Embark on an Adventure
         </h2>
-        <p
-          class="mx-auto mt-6 max-w-xl text-lg md:text-2xl leading-8 text-slate-400"
-        >
+        <p class="mx-auto mt-6 max-w-xl text-lg md:text-2xl leading-8 text-slate-400">
           Take a thrilling journey through our product's features. Book an
           adventurous demo and discover endless possibilities.
         </p>
@@ -109,12 +74,9 @@
 
     <section class="bg-gray-900 text-white">
       <div class="w-full flex md:hidden p-2">
-        <input
-          v-model="searchInput"
-          @input="getProductsByCategory"
+        <input v-model="searchInput" @input="getProductsByCategory"
           class="p-2 rounded-md w-full text-black bg-white border border-gray-300 shadow focus:outline-none focus:ring focus:ring-gray-500 transition hover:cursor-pointer"
-          placeholder="Search..."
-        />
+          placeholder="Search..." />
       </div>
       <div class="flex justify-center items-center">
         <h2 class="text-3xl sm:text-5xl font-bold py-4 md:py-2">
@@ -122,21 +84,12 @@
         </h2>
       </div>
       <div class="relative overflow-hidden mx-auto">
-        <div
-          class="carousel-wrapper sm:w-full flex transition-transform duration-700 ease-in-out"
-          :style="{ transform: `translateX(-${currentIndex * 100}%)` }"
-        >
-          <div
-            v-for="(product, index) in products"
-            :key="product.SW_Id"
-            class="carousel-item bg-gray-200 p-6 shadow-lg text-center flex-none w-full md:w-1/3 cursor-pointer transform transition-transform duration-300"
-          >
-            <img
-              :alt="product.SW_Name"
-              :src="getImageUrl(product.SW_Images)"
-              @click="openModal(product, index)"
-              class="mx-auto mb-4 border-2 border-gray-700 mt-12"
-            />
+        <div class="carousel-wrapper sm:w-full flex transition-transform duration-700 ease-in-out"
+          :style="{ transform: `translateX(-${currentIndex * 100}%)` }">
+          <div v-for="(product, index) in products" :key="product.SW_Id"
+            class="carousel-item bg-gray-200 p-6 shadow-lg text-center flex-none w-full md:w-1/3 cursor-pointer transform transition-transform duration-300">
+            <img :alt="product.SW_Name" :src="getImageUrl(product.SW_Images)" @click="openModal(product, index)"
+              class="mx-auto mb-4 border-2 border-gray-700 mt-12" />
             <h3 class="text-xl font-semibold mb-2 uppercase text-black">
               {{ product.SW_Name }}
             </h3>
@@ -145,81 +98,39 @@
             </p>
           </div>
         </div>
-        <button
-          @click="prevSlide"
-          class="carousel-nav-button bg-gray-800 left-4"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M15 19l-7-7 7-7"
-            />
+        <button @click="prevSlide" class="carousel-nav-button bg-gray-800 left-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+            stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
         </button>
-        <button
-          @click="nextSlide"
-          class="carousel-nav-button bg-gray-800 right-4"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M9 5l7 7-7 7"
-            />
+        <button @click="nextSlide" class="carousel-nav-button bg-gray-800 right-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+            stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
           </svg>
         </button>
       </div>
 
       <div v-if="selectedProduct" class="modal-overlay z-50">
-        <span
-          class="fixed top-0 left-0 w-full h-full bg-black opacity-50"
-          @click="closeModal"
-        ></span>
-        <div
-          class="modal-content flex h-full justify-center items-center z-10 inset-0"
-        >
+        <span class="fixed top-0 left-0 w-full h-full bg-black opacity-50" @click="closeModal"></span>
+        <div class="modal-content flex h-full justify-center items-center z-10 inset-0">
           <div class="mt-24">
             <div class="">
               <div>
                 <div>
                   <div>
                     <div v-if="currentImages.length > 0" class="image-viewer">
-                      <img
-                        :src="getImageUrl(currentImages[currentImageIndex])"
-                        :alt="selectedProduct.SW_Name"
-                        class="modal-image"
-                      />
+                      <img :src="getImageUrl(currentImages[currentImageIndex])" :alt="selectedProduct.SW_Name"
+                        class="modal-image" />
                       <div class="flex items-center justify-center my-2 gap-3">
-                        <button
-                          @click="prevImage"
-                          :disabled="currentImageIndex === 0"
-                          class="nav-button border hover:bg-white hover:text-gray-900 px-2 py-0.5 rounded-full"
-                        >
+                        <button @click="prevImage" :disabled="currentImageIndex === 0"
+                          class="nav-button border hover:bg-white hover:text-gray-900 px-2 py-0.5 rounded-full">
                           ←
                         </button>
                         <div>{{ "1/" + (currentImages.length) }}</div>
-                        <button
-                          @click="nextImage"
-                          :disabled="
-                            currentImageIndex === currentImages.length - 1
-                          "
-                          class="nav-button border hover:bg-white hover:text-gray-900 px-2 py-0.5 rounded-full"
-                        >
+                        <button @click="nextImage" :disabled="currentImageIndex === currentImages.length - 1
+                          " class="nav-button border hover:bg-white hover:text-gray-900 px-2 py-0.5 rounded-full">
                           →
                         </button>
                       </div>
@@ -235,34 +146,29 @@
                   selectSize == "S"
                     ? selectedProduct.SW_Small
                     : selectSize == "M"
-                    ? selectedProduct.SW_Medium
-                    : selectSize == "L"
-                    ? selectedProduct.SW_Large
-                    : selectedProduct.SW_X_large
+                      ? selectedProduct.SW_Medium
+                      : selectSize == "L"
+                        ? selectedProduct.SW_Large
+                        : selectedProduct.SW_X_large
                 }}
               </div>
             </div>
-            <h2 class="text-2xl font-bold mt-2">{{ formattedPrice }}</h2>
-            <p
-              v-if="canceledMinPrice && canceledMaxPrice"
-              class="line-through text-gray-400"
-            >
-              {{ canceledMinPrice }} - {{ canceledMaxPrice }}
-            </p>
+            <div class="flex items-end justify-between py-2 border px-4 rounded-2xl shadow-lg my-2 ">
+              <div class="flex items-end gap-2">
+                <h2 class="text-2xl font-bold">{{ formattedPrice }}</h2>
+                <p v-if="canceledMinPrice" class="line-through text-gray-400 text-xs">
+                  {{ canceledMinPrice }}
+                </p>
+              </div>
+              <div class="">{{selectedProduct.SW_Discount}}% Less</div>
+            </div>
             <div class="mt-4">
               <h3 class="font-semibold">Size</h3>
               <div class="flex flex-wrap gap-2 mt-2">
-                <button
-                  v-for="size in productSizes"
-                  :key="size"
-                  :disabled="getSizes(size)"
-                  :class="{
-                    'bg-primary': selectedSize === size,
-                    'bg-secondary': selectedSize !== size,
-                  }"
-                  class="text-secondary-foreground px-3 py-1 rounded"
-                  @click="selectSize(size)"
-                >
+                <button v-for="size in productSizes" :key="size" :disabled="getSizes(size)" :class="{
+                  'bg-primary': selectedSize === size,
+                  'bg-secondary': selectedSize !== size,
+                }" class="text-secondary-foreground px-3 py-1 rounded" @click="selectSize(size)">
                   {{ size }}
                 </button>
               </div>
@@ -270,43 +176,28 @@
             <div class="mt-4 flex items-center">
               <h3 class="font-semibold">Quantity</h3>
               <div class="flex items-center ml-4">
-                <button
-                  class="bg-secondary text-secondary-foreground px-2 py-1 rounded"
-                  @click="decreaseQuantity"
-                >
+                <button class="bg-secondary text-secondary-foreground px-2 py-1 rounded" @click="decreaseQuantity">
                   -
                 </button>
                 <span class="mx-2">{{ selectedQuantity }}</span>
-                <button
-                  class="bg-secondary text-secondary-foreground px-2 py-1 rounded"
-                  @click="increaseQuantity"
-                  :disabled="getQuantity(selectedQuantity)"
-                >
+                <button class="bg-secondary text-secondary-foreground px-2 py-1 rounded" @click="increaseQuantity"
+                  :disabled="getQuantity(selectedQuantity)">
                   +
                 </button>
               </div>
             </div>
 
             <div class="mt-6 flex justify-between items-center">
-              <button
-                class="bg-secondary px-4 py-2 text-xs sm:text-md rounded"
-                @click="addOnCart"
-              >
+              <button class="bg-secondary px-4 py-2 text-xs sm:text-md rounded" @click="addOnCart">
                 Add to cart
               </button>
-              <button
-                @click="closeModal"
+              <button @click="closeModal"
                 class="modal-close-button text-secondary-foreground text-xs sm:text-md px-4 py-2 m-2 rounded"
-                @keyup.esc="closeModal"
-                tabindex="0"
-                aria-label="Close modal"
-              >
+                @keyup.esc="closeModal" tabindex="0" aria-label="Close modal">
                 Close
               </button>
-              <button
-                class="bg-primary text-primary-foreground text-xs sm:text-md px-4 py-2 rounded"
-                @click="buyNow(product)"
-              >
+              <button class="bg-primary text-primary-foreground text-xs sm:text-md px-4 py-2 rounded"
+                @click="buyNow(product)">
                 Buy
               </button>
             </div>
@@ -322,11 +213,7 @@
                     </div>
                   </div>
                   <div class="flex items-center ml-2">
-                    <span
-                      v-for="star in getStars(review.SW_Rating)"
-                      :key="star"
-                      class="text-yellow-500"
-                    >
+                    <span v-for="star in getStars(review.SW_Rating)" :key="star" class="text-yellow-500">
                       ★
                     </span>
                   </div>
@@ -341,92 +228,61 @@
         </div>
       </div>
     </section>
-    <section
-      class="py-6 bg-gray-900 h-fit pt-12 sm:pt-0"
-      v-if="products.length > 0"
-    >
-      <h1
-        class="text-xl sm:text-3xl pt-24 font-bold flex justify-center text-white"
-      >
+    <section class="py-6 bg-gray-900 h-fit pt-12 sm:pt-0" v-if="products.length > 0">
+      <h1 class="text-xl sm:text-3xl pt-24 font-bold flex justify-center text-white">
         MORE PRODUCTS
       </h1>
-      <div
-        class="px-32 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 my-5"
-      >
-        <div
-          class="rounded overflow-hidden shadow-lg flex flex-col cursor-pointer"
-          v-for="(product, index) in products"
-          :key="product.SW_Id"
-          @click="openModal(product, index)"
-        >
+      <div class="px-32 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 my-5">
+        <div class="rounded overflow-hidden shadow-lg flex flex-col cursor-pointer" v-for="(product, index) in products"
+          :key="product.SW_Id" @click="openModal(product, index)">
           <div class="relative w-full pb-[70%] overflow-hidden">
-            <a
-              ><img
-                class="absolute top-0 left-0 w-full h-full object-cover"
-                :src="getImageUrl(product.SW_Images)"
-                :alt="product.SW_Name"
-                loading="lazy" />
+            <a><img class="absolute top-0 left-0 w-full h-full object-cover" :src="getImageUrl(product.SW_Images)"
+                :alt="product.SW_Name" loading="lazy" />
               <div
-                class="hover:bg-transparent transition duration-300 absolute bottom-0 top-0 right-0 left-0 bg-gray-900 opacity-25"
-              ></div></a
-            ><a href="#!"
-              ><div
-                class="text-xs absolute top-0 right-0 bg-black px-4 py-2 text-white mt-3 mr-3 hover:bg-white hover:text-black transition duration-500 ease-in-out"
-              >
+                class="hover:bg-transparent transition duration-300 absolute bottom-0 top-0 right-0 left-0 bg-gray-900 opacity-25">
+              </div>
+            </a><a href="#!">
+              <div
+                class="text-xs absolute top-0 right-0 bg-black px-4 py-2 text-white mt-3 mr-3 hover:bg-white hover:text-black transition duration-500 ease-in-out">
                 STREETWEAR
-              </div></a
-            >
+              </div>
+            </a>
           </div>
           <div class="px-6 py-4 mb-auto bg-gray-800 text-white">
             <a
-              class="font-medium text-lg inline-block hover:text-[#D98757] transition duration-500 ease-in-out inline-block mb-2"
-              >{{ product.SW_Name }}</a
-            >
+              class="font-medium text-lg inline-block hover:text-[#D98757] transition duration-500 ease-in-out inline-block mb-2">{{
+                product.SW_Name }}</a>
           </div>
-          <div
-            class="px-4 py-3 flex flex-row items-center justify-between bg-gray-100 bg-gray-800"
-          >
+          <div class="px-4 py-3 flex flex-row items-center justify-between bg-gray-800">
             <a
-              class="py-3 rounded-lg text-xs text-white font-regular mr-1 px-6 flex flex-row items-center cursor-pointer bg-gray-900 border"
-              ><span class="ml-1">View Details</span></a
-            >
+              class="py-3 rounded-lg text-xs text-white font-regular mr-1 px-6 flex flex-row items-center cursor-pointer bg-gray-900 border"><span
+                class="ml-1">View Details</span></a>
           </div>
         </div>
       </div>
     </section>
 
     <div class="fixed md:relative flex justify-center items-center w-full">
-      <p
-        class="bg-gray-200 w-full py-4 flex text-lg font-black justify-center"
-        v-if="products.length < 1"
-      >
+      <p class="bg-gray-200 w-full py-4 flex text-lg font-black justify-center" v-if="products.length < 1">
         No product available.
       </p>
     </div>
 
-    <section
-      v-if="checkoutModal"
-      class="bg-gray-900 fixed left-0 top-0 w-full h-full flex items-center justify-center"
-    >
+    <section v-if="checkoutModal" class="bg-gray-900 fixed left-0 top-0 w-full h-full flex items-center justify-center">
       <div class="flex justify-center m-4">
         <div
-          class="flex flex-col max-w-3xl p-6 space-y-4 sm:p-10 dark:bg-gray-50 dark:text-gray-800 rounded-md bg-white"
-        >
+          class="flex flex-col max-w-3xl p-6 space-y-4 sm:p-10 dark:bg-gray-50 dark:text-gray-800 rounded-md bg-white">
           <h2 class="text-xl font-semibold">Check Out</h2>
           <ul class="flex flex-col divide-y dark:divide-gray-300">
             <li class="flex flex-col py-6 sm:flex-row sm:justify-between">
               <div class="flex w-full space-x-2 sm:space-x-4">
-                <img
-                  :src="getImageUrl(buyNowData[0].image)"
-                  class="flex-shrink-0 object-cover w-20 h-20 dark:bg-gray-500 sm:w-32 sm:h-32 rounded"
-                />
+                <img :src="getImageUrl(buyNowData[0].image)"
+                  class="flex-shrink-0 object-cover w-20 h-20 dark:bg-gray-500 sm:w-32 sm:h-32 rounded" />
 
                 <div class="flex flex-col justify-between w-full pb-4">
                   <div class="flex justify-between w-full pb-2 space-x-2">
                     <div class="space-y-1">
-                      <h3
-                        class="text-lg font-semibold leading-snug sm:pr-8"
-                      ></h3>
+                      <h3 class="text-lg font-semibold leading-snug sm:pr-8"></h3>
                       <p class="text-sm dark:text-gray-600">Size:</p>
                       {{ buyNowData[0].size }}
                       <p class="text-sm dark:text-gray-600">Quantity:</p>
@@ -447,23 +303,13 @@
               <span class="font-semibold">₱{{ buyNowData[0].amount }}</span>
             </p>
           </div>
-          <div
-            class="flex flex-col-reverse sm:flex-row justify-end sm:space-x-4"
-          >
-            <button
-              @click="closeBuyNow"
-              type="button"
-              aria-label="Go back to cart"
-              class="m-2 md:px-6 md:py-2 border rounded-md border-gray-800"
-            >
+          <div class="flex flex-col-reverse sm:flex-row justify-end sm:space-x-4">
+            <button @click="closeBuyNow" type="button" aria-label="Go back to cart"
+              class="m-2 md:px-6 md:py-2 border rounded-md border-gray-800">
               Back
             </button>
-            <button
-              type="button"
-              aria-label="Place your order"
-              @click="placeOrder"
-              class="m-2 md:px-6 md:py-2 border rounded-md bg-gray-800 dark:text-gray-50 text-white border-gray-800"
-            >
+            <button type="button" aria-label="Place your order" @click="placeOrder"
+              class="m-2 md:px-6 md:py-2 border rounded-md bg-gray-800 dark:text-gray-50 text-white border-gray-800">
               Place Order
             </button>
           </div>
@@ -472,67 +318,40 @@
     </section>
 
     <nav class="fixed bottom-0 w-full bg-white md:hidden">
-      <ul
-        id="mobile-menu"
-        class="flex justify-evenly items-center bg-white border-t"
-      >
-        <RouterLink
-          to="buyerHomepage"
-          class="group flex items-center py-4 relative"
-          active-class="active"
-        >
+      <ul id="mobile-menu" class="flex justify-evenly items-center bg-white border-t">
+        <RouterLink to="buyerHomepage" class="group flex items-center py-4 relative" active-class="active">
           <HomeIcon />
           <span
-            class="z-50 absolute left-1/5 bottom-12 transform -translate-x-1/2 text-white bg-gray-800 px-4 rounded-md hidden group-hover:flex"
-          >
+            class="z-50 absolute left-1/5 bottom-12 transform -translate-x-1/2 text-white bg-gray-800 px-4 rounded-md hidden group-hover:flex">
             Home
           </span>
         </RouterLink>
 
-        <RouterLink
-          to="cart"
-          class="group flex items-center"
-          active-class="active"
-        >
+        <RouterLink to="cart" class="group flex items-center" active-class="active">
           <Cart />
           <span
-            class="z-50 absolute left-2/5 bottom-12 transform -translate-x-1/2 mt-2 text-white bg-gray-800 px-4 rounded-md hidden group-hover:flex"
-          >
+            class="z-50 absolute left-2/5 bottom-12 transform -translate-x-1/2 mt-2 text-white bg-gray-800 px-4 rounded-md hidden group-hover:flex">
             Cart
           </span>
         </RouterLink>
-        <RouterLink
-          to="purchase"
-          class="group flex items-center py-4"
-          active-class="active"
-        >
+        <RouterLink to="purchase" class="group flex items-center py-4" active-class="active">
           <BagIcon />
           <span
-            class="z-50 absolute left-3/5 bottom-12 transform -translate-x-1/2 mt-2 text-white bg-gray-800 px-4 rounded-md hidden group-hover:flex"
-          >
+            class="z-50 absolute left-3/5 bottom-12 transform -translate-x-1/2 mt-2 text-white bg-gray-800 px-4 rounded-md hidden group-hover:flex">
             Bag
           </span>
         </RouterLink>
-        <RouterLink
-          to="buyersettings"
-          class="group flex items-center py-4"
-          active-class="active"
-        >
+        <RouterLink to="buyersettings" class="group flex items-center py-4" active-class="active">
           <CogsIcon />
           <span
-            class="z-50 absolute left-4/5 bottom-12 transform -translate-x-1/2 mt-2 text-white bg-gray-800 px-4 rounded-md hidden group-hover:flex"
-          >
+            class="z-50 absolute left-4/5 bottom-12 transform -translate-x-1/2 mt-2 text-white bg-gray-800 px-4 rounded-md hidden group-hover:flex">
             Settings
           </span>
         </RouterLink>
-        <div
-          @click="LogOut"
-          class="group flex items-center py-4 cursor-pointer"
-        >
+        <div @click="LogOut" class="group flex items-center py-4 cursor-pointer">
           <LogOutIcon />
           <span
-            class="z-50 absolute left-5/5 bottom-12 transform -translate-x-1/2 mt-2 text-white bg-gray-800 px-4 rounded-md hidden group-hover:flex"
-          >
+            class="z-50 absolute left-5/5 bottom-12 transform -translate-x-1/2 mt-2 text-white bg-gray-800 px-4 rounded-md hidden group-hover:flex">
             Logout
           </span>
         </div>
@@ -610,7 +429,7 @@ const goToPage = (page) => {
 const formattedPrice = computed(() => {
   if (selectedProduct.value) {
     return `₱${(
-      selectedProduct.value.SW_Price * selectedQuantity.value
+      selectedProduct.value.SW_Price * selectedQuantity.value - ((selectedProduct.value.SW_Price * selectedQuantity.value) * (selectedProduct.value.SW_Discount / 100))
     ).toFixed(2)}`;
   }
   return "₱0.00";
@@ -627,15 +446,15 @@ function toggleSearch() {
 
 const canceledMinPrice = computed(() => {
   if (selectedProduct.value) {
-    return `₱${(selectedProduct.value.SW_Price + 200 * 0.355).toFixed(2)}`;
+    return `₱${(selectedProduct.value.SW_Price * selectedQuantity.value).toFixed(2)}`;
   }
 });
 
-const canceledMaxPrice = computed(() => {
-  if (selectedProduct.value) {
-    return `₱${(selectedProduct.value.SW_Price + 600 * 0.355).toFixed(2)}`;
-  }
-});
+// const canceledMaxPrice = computed(() => {
+//   if (selectedProduct.value) {
+//     return `₱${(selectedProduct.value.SW_Price + 600 * 0.355).toFixed(2)}`;
+//   }
+// });
 const refactorImages = ref(null);
 const getProducts = async () => {
   try {
@@ -771,12 +590,12 @@ const getSizes = (size) => {
   return size === "S" && products.value[productIndex.value].SW_Small === 0
     ? true
     : size === "M" && products.value[productIndex.value].SW_Medium === 0
-    ? true
-    : size === "L" && products.value[productIndex.value].SW_Large === 0
-    ? true
-    : size === "XL" && products.value[productIndex.value].SW_X_large === 0
-    ? true
-    : false;
+      ? true
+      : size === "L" && products.value[productIndex.value].SW_Large === 0
+        ? true
+        : size === "XL" && products.value[productIndex.value].SW_X_large === 0
+          ? true
+          : false;
 };
 
 const getQuantity = (qty) => {
@@ -785,14 +604,14 @@ const getQuantity = (qty) => {
     ? true
     : mySize.value === "M" &&
       qty === products.value[productIndex.value].SW_Medium
-    ? true
-    : mySize.value === "L" &&
-      qty === products.value[productIndex.value].SW_Large
-    ? true
-    : mySize.value === "XL" &&
-      qty === products.value[productIndex.value].SW_X_large
-    ? true
-    : false;
+      ? true
+      : mySize.value === "L" &&
+        qty === products.value[productIndex.value].SW_Large
+        ? true
+        : mySize.value === "XL" &&
+          qty === products.value[productIndex.value].SW_X_large
+          ? true
+          : false;
 };
 const closeModal = () => {
   selectedProduct.value = null;

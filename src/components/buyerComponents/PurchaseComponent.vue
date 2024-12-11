@@ -554,7 +554,8 @@ const submitFeedback = async () => {
 const confirmDeleteOrder = async () => {
   isDeleteModalOpen.value = false;
   try {
-    await axios.delete(`/user/order/${selectedOrder.value.SW_Id}`);
+    const response = await axios.delete(`/user/order/${selectedOrder.value.SW_Id}`);
+    console.log(response);
     orders.value = orders.value.filter(
       (o) => o.SW_Id !== selectedOrder.value.SW_Id
     );

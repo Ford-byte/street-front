@@ -645,7 +645,7 @@ const goToPage = (page) => {
 const formattedPrice = computed(() => {
   if (selectedProduct.value) {
     return `₱${(
-      selectedProduct.value.SW_Price * selectedQuantity.value
+      selectedProduct.value.SW_Price * selectedQuantity.value - (selectedProduct.value.SW_Price * selectedQuantity.value) * selectedProduct.value.SW_Discount
     ).toFixed(2)}`;
   }
   return "₱0.00";
@@ -769,7 +769,7 @@ const reviews = ref([]);
 const getReviews = async (id) => {
   try {
     const response = await axios.get(`/feedbacks/${id}`);
-    reviews.value = response.data.renamedResult || null;
+    reviews.value = response.data.renamedResult || [];
   } catch (error) {
     console.error("Error fetching user data:", error);
   }
@@ -777,6 +777,7 @@ const getReviews = async (id) => {
 
 const openModal = (product, index) => {
   selectedProduct.value = product;
+
 
   getReviews(selectedProduct.value.SW_Size_id);
 
@@ -797,6 +798,7 @@ const openModal = (product, index) => {
   productIndex.value = index;
   selectedQuantity.value = 1;
   selectedSize.value = null;
+
 
   setTimeout(() => {
     closeModal();
